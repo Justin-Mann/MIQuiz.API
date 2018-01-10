@@ -14,8 +14,5 @@ namespace MIQuizAPI.Database.Context
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<QuizDef> Quizes { get; set; }
-        public DbSet<SavedQuiz> SavedQuizes { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Question> Credentials { get; set; }
     }
 }
