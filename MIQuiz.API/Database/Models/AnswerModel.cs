@@ -9,16 +9,17 @@ using System.Threading.Tasks;
 namespace MIQuizAPI.Database.Models
 {
     [Table("AnswerTbl")]
-    public class Answer
+    public class AnswerDef
     {
-        public Answer()
+        public AnswerDef()
         {
-            this.Question = new Question();
+            this.Question = new QuestionDef();
         }
 
         [Key]
         public int Id { get; set; }
 
+        //TODO: Index On This
         public int QuestionId { get; set; }
 
         [DisplayName("Answer Text")]
@@ -36,6 +37,6 @@ namespace MIQuizAPI.Database.Models
         public int? Order { get; set; }
 
         [ForeignKey("QuestionId")]
-        public virtual Question Question { get; set; }
+        public virtual QuestionDef Question { get; set; }
     }
 }

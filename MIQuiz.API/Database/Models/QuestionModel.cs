@@ -7,43 +7,43 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MIQuizAPI.Database.Models
-{
-    [Table("QuestionTbl")]
-    public class Question
-    {
-        public Question()
-        {
-            this.Answers = new HashSet<Answer>();
+namespace MIQuizAPI.Database.Models {
+    [Table( "QuestionTbl" )]
+    public class QuestionDef {
+        public QuestionDef() {
+            this.Answers = new HashSet<AnswerDef>();
+            this.ConsumerQuizes = new HashSet<QuizDef>();
         }
 
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("Question Text")]
-        [MinLength(2, ErrorMessage = "Question Text must be at least 2 characters long."),
-         MaxLength(250, ErrorMessage = "Question Text can only be 250 characters long.")]
+        [DisplayName( "Question Text" )]
+        [MinLength( 2, ErrorMessage = "Question Text must be at least 2 characters long." ),
+         MaxLength( 250, ErrorMessage = "Question Text can only be 250 characters long." )]
         public string Text { get; set; }
 
-        [DisplayName("Question Type")]
-        [Required(ErrorMessage = "Question Type cannot be empty.")]
+        [DisplayName( "Question Type" )]
+        [Required( ErrorMessage = "Question Type cannot be empty." )]
         public string Type { get; set; }
 
-        [DisplayName("Question Image")]
+        [DisplayName( "Question Image" )]
         public byte[] ImageBlob { get; set; }
 
-        [DisplayName("Question Image URL (external image)")]
+        [DisplayName( "Question Image URL (external image)" )]
         public string ImageURI { get; set; }
 
-        [DisplayName("Question Video URL (external image)")]
+        [DisplayName( "Question Video URL (external image)" )]
         public string videoURI { get; set; }
 
-        [DisplayName("Active")]
+        [DisplayName( "Active" )]
         public bool IsActive { get; set; }
 
-        [DisplayName("Order")]
+        [DisplayName( "Order" )]
         public int? Order { get; set; }
 
-        public virtual ICollection<Answer> Answers { get; set; }
+        public virtual ICollection<AnswerDef> Answers { get; set; }
+
+        public virtual ICollection<QuizDef> ConsumerQuizes { get; set; }
     }
 }

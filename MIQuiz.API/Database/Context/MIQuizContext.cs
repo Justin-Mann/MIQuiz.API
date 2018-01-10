@@ -11,8 +11,9 @@ namespace MIQuizAPI.Database.Context
     {
         public MIQuizContext(DbContextOptions<MIQuizContext> options) : base(options) { }
 
-        public DbSet<Answer> Answers { get; set; }
-        public DbSet<Question> Questions { get; set; }
+        public DbSet<AnswerDef> Answers { get; set; }
+        public DbSet<QuestionDef> Questions { get; set; }
         public DbSet<QuizDef> Quizes { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
