@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/MIQuiz.API",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:62385/",
       "sslPort": 0
@@ -17,9 +21,9 @@
       }
     },
     "MIQuizAPI": {
-      "commandName": "Project",
+      "commandName": "IIS",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "api/quizes",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

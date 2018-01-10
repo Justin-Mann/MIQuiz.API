@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MIQuizAPI.Database.Context;
+using MIQuizAPI.Database.Models;
 using MIQuizAPI.Repository;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,18 +21,18 @@ namespace MIQuizAPI.Controllers
             _quizRepo = quizRepo;
         }
 
-        // GET: api/<controller>
+        // GET: api/quizes
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<QuizDef> Get()
         {
-            return new string[] { "value1", "value2" };
+            return _quizRepo.ListQuizes();
         }
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public QuizDef Get(int id)
         {
-            return "value";
+            return _quizRepo.GetQuiz(id);
         }
 
         // POST api/<controller>
