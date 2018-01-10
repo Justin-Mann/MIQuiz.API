@@ -13,6 +13,6 @@ namespace MIQuizAPI.Database.Context
 
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Question> Questions { get; set; }
-        public DbSet<QuizDef> Quizes { get; set; 1}
+        public DbSet<QuizDef> Quizes { get; set; }
     }
 }
