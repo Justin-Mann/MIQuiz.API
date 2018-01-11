@@ -12,7 +12,7 @@ namespace MIQuizAPI.Database.Models {
     public class QuizDef {
         public QuizDef() {
             this.Owner = new User();
-            this.Questions = new HashSet<QuestionDef>();
+            this.Questions = new List<QuestionDef>();
         }
 
         [Key]

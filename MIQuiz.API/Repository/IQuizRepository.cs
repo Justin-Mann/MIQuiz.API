@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MIQuizAPI.Repository
 {
-    interface IQuizRepository
+    public interface IQuizRepository
     {
         #region Users
         HashSet<User> ListUsers();
@@ -75,7 +75,7 @@ namespace MIQuizAPI.Repository
         AnswerDef GetAnswer( int id );
 
         //Get Correct Answer By QuestionId
-        AnswerDef GetCorrectAnswerForQuestion( int id );
+        HashSet<AnswerDef> GetCorrectAnswersForQuestion( int id );
 
         //Check Correctness of an Answer By AnswerId
         bool CheckAnswer( int id );

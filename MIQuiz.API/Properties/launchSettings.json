@@ -7,15 +7,15 @@
       "sslPort": 0
     },
     "iisExpress": {
-      "applicationUrl": "http://localhost:62385/",
-      "sslPort": 0
+      "applicationUrl": "http://MIQuizAPI/",
+      "sslPort": 44300
     }
   },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "api/quizes",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

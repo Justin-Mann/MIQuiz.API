@@ -9,48 +9,40 @@ using MIQuizAPI.Repository;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace MIQuizAPI.Controllers
-{
-    [Route("api/quizes")]
-    public class QuizesController : Controller
-    {
+namespace MIQuizAPI.Controllers {
+    [Route( "api/quizes" )]
+    public class QuizesController : Controller {
         private readonly IQuizRepository _quizRepo;
 
-        public QuizesController(QuizRepository quizRepo)
-        {
+        public QuizesController( IQuizRepository quizRepo ) {
             _quizRepo = quizRepo;
         }
 
         // GET: api/quizes
         [HttpGet]
-        public IEnumerable<QuizDef> Get()
-        {
-            return _quizRepo.ListQuizes();
+        public IEnumerable<QuizDef> Get() {
+            return _quizRepo.ListQuizes().ToList();
         }
 
         // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public QuizDef Get(int id)
-        {
-            return _quizRepo.GetQuiz(id);
+        [HttpGet( "{id}" )]
+        public QuizDef Get( int id ) {
+            return _quizRepo.GetQuiz( id );
         }
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
-        {
+        public void Post( [FromBody]string value ) {
         }
 
         // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
+        [HttpPut( "{id}" )]
+        public void Put( int id, [FromBody]string value ) {
         }
 
         // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+        [HttpDelete( "{id}" )]
+        public void Delete( int id ) {
         }
     }
 }

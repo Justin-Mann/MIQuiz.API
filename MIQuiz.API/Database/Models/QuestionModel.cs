@@ -11,8 +11,8 @@ namespace MIQuizAPI.Database.Models {
     [Table( "QuestionTbl" )]
     public class QuestionDef {
         public QuestionDef() {
-            this.Answers = new HashSet<AnswerDef>();
-            this.ConsumerQuizes = new HashSet<QuizDef>();
+            this.ConsumerQuiz = new QuizDef();
+            this.Answers = new List<AnswerDef>();
         }
 
         [Key]
@@ -44,6 +44,6 @@ namespace MIQuizAPI.Database.Models {
 
         public virtual ICollection<AnswerDef> Answers { get; set; }
 
-        public virtual ICollection<QuizDef> ConsumerQuizes { get; set; }
+        public virtual QuizDef ConsumerQuiz { get; set; }
     }
 }

@@ -6,13 +6,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MIQuizAPI.Database.Models
-{
-    [Table("AnswerTbl")]
-    public class AnswerDef
-    {
-        public AnswerDef()
-        {
+namespace MIQuizAPI.Database.Models {
+    [Table( "AnswerTbl" )]
+    public class AnswerDef {
+        public AnswerDef() {
             this.Question = new QuestionDef();
         }
 
@@ -22,21 +19,24 @@ namespace MIQuizAPI.Database.Models
         //TODO: Index On This
         public int QuestionId { get; set; }
 
-        [DisplayName("Answer Text")]
-        [MinLength(2, ErrorMessage = "Answer Text must be at least 2 characters long."),
-         MaxLength(250, ErrorMessage = "Answer Text can only be 250 characters long.")]
+        [DisplayName( "Answer Text" )]
+        [MinLength( 2, ErrorMessage = "Answer Text must be at least 2 characters long." ),
+         MaxLength( 250, ErrorMessage = "Answer Text can only be 250 characters long." )]
         public string Text { get; set; }
 
-        [DisplayName("Correct Answer")]
+        [DisplayName( "Answer Image" )]
+        public string Image { get; set; }
+
+        [DisplayName( "Correct Answer" )]
         public bool IsCorrectAnswer { get; set; }
 
-        [DisplayName("Active")]
+        [DisplayName( "Active" )]
         public bool IsActive { get; set; }
 
-        [DisplayName("Order")]
+        [DisplayName( "Order" )]
         public int? Order { get; set; }
 
-        [ForeignKey("QuestionId")]
+        [ForeignKey( "QuestionId" )]
         public virtual QuestionDef Question { get; set; }
     }
 }

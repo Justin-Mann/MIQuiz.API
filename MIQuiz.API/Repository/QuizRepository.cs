@@ -196,9 +196,11 @@ namespace MIQuizAPI.Repository {
             return _quizContext.Answers.Single( a => id.Equals( a.Id ) && a.IsActive );
         }
 
-        //Get Correct Answer By QuestionId
-        public AnswerDef GetCorrectAnswerForQuestion( int id ) {
-            return _quizContext.Answers.Single( a => id.Equals( a.Id ) && a.IsActive && a.IsCorrectAnswer );
+        //Get Correct Answers By QuestionId
+        public HashSet<AnswerDef> GetCorrectAnswersForQuestion( int id ) {
+            return _quizContext.Answers
+                               .Where( a => id.Equals( a.Id ) && a.IsActive && a.IsCorrectAnswer )
+                               .ToHashSet();
         }
 
         //Check Correctness of an Answer By AnswerId

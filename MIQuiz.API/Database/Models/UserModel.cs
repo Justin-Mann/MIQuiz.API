@@ -7,14 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MIQuizAPI.Database.Models
-{
+namespace MIQuizAPI.Database.Models {
     [Table( "UsersTbl" )]
-    public class User
-    {
-        public User()
-        {
-            this.CreatedQuizes = new HashSet<QuizDef>();
+    public class User {
+        public User() {
+            this.CreatedQuizes = new List<QuizDef>();
         }
 
         [Key]
