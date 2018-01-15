@@ -10,12 +10,8 @@ using System.Threading.Tasks;
 namespace MIQuizAPI.Database.Models {
     [Table( "UsersTbl" )]
     public class User {
-        public User() {
-            this.CreatedQuizes = new List<QuizDef>();
-        }
-
         [Key]
-        public int Id { get; set; }
+        public int UserId { get; set; }
 
         [DisplayName( "First Name" )]
         [MinLength( 2, ErrorMessage = "First Name must be at least 2 characters long." ),

@@ -11,36 +11,36 @@ using MIQuizAPI.Repository;
 
 namespace MIQuizAPI.Controllers {
     [Route( "api/quizes" )]
-    public class QuizesController : Controller {
-        private readonly IQuizRepository _quizRepo;
+    public class UsersController : Controller {
+        private readonly IUserRepository _userRepo;
 
-        public QuizesController( IQuizRepository quizRepo ) {
-            _quizRepo = quizRepo;
+        public UsersController( IUserRepository userRepo ) {
+            _userRepo = userRepo;
         }
 
-        // GET: api/quizes
+        // GET: api/users
         [HttpGet]
-        public IEnumerable<QuizDef> Get() {
-            return _quizRepo.GetQuizes();
+        public IEnumerable<User> Get() {
+            return _userRepo.GetUsers();
         }
 
-        // GET api/quizes/5
+        // GET api/users/5
         [HttpGet( "{id}" )]
-        public QuizDef Get( int id ) {
-            return _quizRepo.GetQuiz( id );
+        public User Get( int id ) {
+            return _userRepo.GetUser( id );
         }
 
-        // POST api/quizes
+        // POST api/users
         [HttpPost]
         public void Post( [FromBody]string value ) {
         }
 
-        // PUT api/quizes/5
+        // PUT api/users/5
         [HttpPut( "{id}" )]
         public void Put( int id, [FromBody]string value ) {
         }
 
-        // DELETE api/quizes/5
+        // DELETE api/users/5
         [HttpDelete( "{id}" )]
         public void Delete( int id ) {
         }

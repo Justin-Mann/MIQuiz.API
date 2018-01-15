@@ -8,15 +8,9 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace MIQuizAPI.Database.Models {
-    [Table( "QuestionTbl" )]
     public class QuestionDef {
-        public QuestionDef() {
-            this.ConsumerQuiz = new QuizDef();
-            this.Answers = new List<AnswerDef>();
-        }
-
         [Key]
-        public int Id { get; set; }
+        public int QuestionId { get; set; }
 
         [DisplayName( "Question Text" )]
         [MinLength( 2, ErrorMessage = "Question Text must be at least 2 characters long." ),
@@ -27,23 +21,15 @@ namespace MIQuizAPI.Database.Models {
         [Required( ErrorMessage = "Question Type cannot be empty." )]
         public string Type { get; set; }
 
-        [DisplayName( "Question Image" )]
-        public byte[] ImageBlob { get; set; }
-
-        [DisplayName( "Question Image URL (external image)" )]
-        public string ImageURI { get; set; }
-
-        [DisplayName( "Question Video URL (external image)" )]
-        public string videoURI { get; set; }
-
         [DisplayName( "Active" )]
         public bool IsActive { get; set; }
 
-        [DisplayName( "Order" )]
-        public int? Order { get; set; }
+        public Image QuestionImage { get; set; }
 
-        public virtual ICollection<AnswerDef> Answers { get; set; }
+        public Video QuestionVideo { get; set; }
 
-        public virtual QuizDef ConsumerQuiz { get; set; }
+        public virtual ICollection<JoinQuizQuestion> Quizes { get; } = new List<JoinQuizQuestion>();
+
+        public virtual ICollection<JoinQuestionAnswer> Answers { get; } = new List<JoinQuestionAnswer>();
     }
 }

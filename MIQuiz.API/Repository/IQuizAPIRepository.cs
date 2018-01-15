@@ -1,30 +1,28 @@
-﻿using MIQuizAPI.Database.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using MIQuizAPI.Database.Models;
 
-namespace MIQuizAPI.Repository
-{
-    public interface IQuizRepository
-    {
-        #region Users
+namespace MIQuizAPI.Repository {
+    #region Users Repo Interface
+    public interface IUserRepository {
+        // List Users
         HashSet<User> ListUsers();
 
-        // Get Users
+        //// Get Users
         HashSet<User> GetUsers();
 
-        // Get User(s) By Id(s)
+        //// Get User(s) By Id(s)
         HashSet<User> GetUsers( List<int> ids );
 
-        // Get User By Id
+        //// Get User By Id
         User GetUser( int id );
 
-        // Get User By Id -- synonym for GetQuizesByOwnerIds
-        HashSet<QuizDef> GetAdminUserQuizes( int id );
-        #endregion
+        //// Get User By Id -- synonym for GetQuizesByOwnerIds
+        User GetAdminUserQuizes( int id );
+    }
+    #endregion
 
-        #region Quizes
+    #region Quizes Repo Interface
+    public interface IQuizRepository {
         // List All Quizes
         HashSet<QuizDef> ListQuizes();
 
@@ -39,9 +37,11 @@ namespace MIQuizAPI.Repository
 
         //Get Quizes By OwnerId
         HashSet<QuizDef> GetQuizesByOwnerIds( List<int> ids );
-        #endregion
+    }
+    #endregion
 
-        #region Questions
+    #region Questions Repo Interface
+    public interface IQuestionRepository {
         //List Questions
         HashSet<QuestionDef> ListQuestions();
 
@@ -53,14 +53,18 @@ namespace MIQuizAPI.Repository
 
         //Get Question By Id
         QuestionDef GetQuestion( int id );
-        #endregion
 
-        #region Answers
+        HashSet<AnswerDef> GetCorrectAnswers( int questionId );
+    }
+    #endregion
+
+    #region Answers Repo Interface
+    public interface IAnswerRepository {
         //List Answers To A Question By QuestionId
         HashSet<AnswerDef> ListAnswersForQuestion( int id );
 
         //List All Answers To A Set Of Questions By QuestionIds
-        HashSet<AnswerDef> ListAnswersForQuestions( List<int> ids );
+        //HashSet<AnswerDef> ListAnswersForQuestions( List<int> ids );
 
         //Get All Answers To A Set Of Questions By QuestionId
         HashSet<AnswerDef> GetAnswersForQuestions( List<int> ids );
@@ -75,13 +79,13 @@ namespace MIQuizAPI.Repository
         AnswerDef GetAnswer( int id );
 
         //Get Correct Answer By QuestionId
-        HashSet<AnswerDef> GetCorrectAnswersForQuestion( int id );
+        //HashSet<AnswerDef> GetCorrectAnswersForQuestion( int id );
 
         //Check Correctness of an Answer By AnswerId
-        bool CheckAnswer( int id );
+        bool CheckAnswer( int questionId, int answerId );
 
         //List Correct Questions/Answers For A Quiz
         HashSet<QuestionDef> AnswerSheetForQuiz( int id );
-        #endregion
     }
+    #endregion
 }

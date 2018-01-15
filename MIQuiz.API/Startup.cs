@@ -22,12 +22,18 @@ namespace MIQuizAPI {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices( IServiceCollection services ) {
-            services.AddMvc();
+
+            services.AddMvc().AddJsonOptions(
+                                options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore );
+
             services.AddDbContext<MIQuizContext>( options =>
                          options.UseSqlServer( Configuration.GetConnectionString( "DefaultConnection" ) ) );
 
             // Register Application Level Services
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IQuizRepository, QuizRepository>();
+            services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<IAnswerRepository, AnswerRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

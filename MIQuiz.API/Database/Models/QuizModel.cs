@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -8,18 +7,13 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace MIQuizAPI.Database.Models {
-    [Table( "QuizTbl" )]
-    public class QuizDef {
-        public QuizDef() {
-            this.Owner = new User();
-            this.Questions = new List<QuestionDef>();
-        }
 
+    public class QuizDef {
         [Key]
-        public int Id { get; set; }
+        public int QuizId { get; set; }
 
         //TODO: Index On This Field
-        public int OwnerId { get; set; }
+        public int UserId { get; set; }
 
         [DisplayName( "Quiz Name" )]
         [Required( ErrorMessage = "Quiz must have a name." )]
@@ -45,9 +39,6 @@ namespace MIQuizAPI.Database.Models {
         [DisplayName( "Order" )]
         public int? Order { get; set; }
 
-        [ForeignKey( "OwnerId" )]
-        public virtual User Owner { get; set; }
-
-        public virtual ICollection<QuestionDef> Questions { get; set; }
+        public virtual ICollection<JoinQuizQuestion> Questions { get; } = new List<JoinQuizQuestion>();
     }
 }
