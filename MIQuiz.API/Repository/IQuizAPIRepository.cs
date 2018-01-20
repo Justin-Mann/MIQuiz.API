@@ -4,6 +4,9 @@ using MIQuizAPI.Database.Models;
 namespace MIQuizAPI.Repository {
     #region Users Repo Interface
     public interface IUserRepository {
+        // Add A New User
+        void AddUser( User user );
+
         // List Users
         HashSet<User> ListUsers();
 
@@ -23,6 +26,9 @@ namespace MIQuizAPI.Repository {
 
     #region Quizes Repo Interface
     public interface IQuizRepository {
+        // Add A New Quiz
+        void AddQuiz( QuizDef quiz );
+
         // List All Quizes
         HashSet<QuizDef> ListQuizes();
 

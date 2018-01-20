@@ -12,6 +12,10 @@ namespace MIQuizAPI.Database.Models {
         [Key]
         public int QuestionId { get; set; }
 
+        public int? ImageId { get; set; }
+
+        public int? VideoId { get; set; }
+
         [DisplayName( "Question Text" )]
         [MinLength( 2, ErrorMessage = "Question Text must be at least 2 characters long." ),
          MaxLength( 250, ErrorMessage = "Question Text can only be 250 characters long." )]
@@ -21,12 +25,12 @@ namespace MIQuizAPI.Database.Models {
         [Required( ErrorMessage = "Question Type cannot be empty." )]
         public string Type { get; set; }
 
-        [DisplayName( "Active" )]
-        public bool IsActive { get; set; }
-
         public Image QuestionImage { get; set; }
 
         public Video QuestionVideo { get; set; }
+
+        [DisplayName( "Active" )]
+        public bool IsActive { get; set; }
 
         public virtual ICollection<JoinQuizQuestion> Quizes { get; } = new List<JoinQuizQuestion>();
 

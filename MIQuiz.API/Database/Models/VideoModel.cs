@@ -12,9 +12,13 @@ namespace MIQuizAPI.Database.Models {
         public int VideoId { get; set; }
 
         [DisplayName( "Video URL/URI" )]
-        public string ImageURI { get; set; }
+        public string VideoURI { get; set; }
 
         [DisplayName( "Active" )]
         public bool IsActive { get; set; }
+
+        public virtual IEnumerable<QuestionDef> Questions { get; set; }
+
+        public virtual IEnumerable<AnswerDef> Anwsers { get; set; }
     }
 }

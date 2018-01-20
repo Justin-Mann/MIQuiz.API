@@ -13,11 +13,12 @@ namespace MIQuizAPI.Database
             context.Database.EnsureCreated();
 
             var demoUser = "LaneBoy";
+            var demoQuiz = "LaneBoyQuiz";
 
             // Check if records exist... if so then no need to run seed methods.
-            if(context.Users.Any() || context.Quizes.Any() || context.Questions.Any() || context.Answers.Any() ) {
-                return;
-            }
+            //if(context.Users.Any() && context.Quizes.Any() && context.Questions.Any() && context.Answers.Any() ) {
+            //    return;
+            //}
 
             // Seeds of proserity
             var users = new User[] {
@@ -27,16 +28,18 @@ namespace MIQuizAPI.Database
                 context.Users.Add( u );
             }
             context.SaveChanges();
-
             var demoUserId = users.Single( u => u.UserName.Equals( demoUser ) ).UserId;
 
             var quizDefs = new QuizDef[] {
-                new QuizDef{ Name="Demo Quiz YO!", Description="This is a test... it is only a test.", Instructions="Do the thing.", GradingCriteria="Largely based on feels, you know like college.", IsActive=true, Order=0, UserId=demoUserId }
+                new QuizDef{ Name=demoQuiz,
+                             Description ="This is a test... it is only a test.", Instructions="Do the thing.", GradingCriteria="Largely based on feels, you know like college.", IsActive=true, UserId=demoUserId }
             };
             foreach( QuizDef qd in quizDefs ) {
                 context.Quizes.Add( qd );
             }
             context.SaveChanges();
+            var demoQuizId = quizDefs.Single( q => q.Name.Equals( demoQuiz ) ).QuizId;
+
 
             var questionDefs = new QuestionDef[] {
                 new QuestionDef{ IsActive=true, Type="MC", Text="Multiple Choice Question With Single Correct Answer?" },
@@ -77,12 +80,12 @@ namespace MIQuizAPI.Database
             context.SaveChanges();
 
             var quizToQuestion = new JoinQuizQuestion[] {
-                new JoinQuizQuestion{ Quiz=quizDefs[0], Question=questionDefs[0], QuestionOrder=0 }, //Multiple Choice Question With Single Correct Answer?
-                new JoinQuizQuestion{ Quiz=quizDefs[0], Question=questionDefs[1], QuestionOrder=1 }, //Multiple Choice Question With Several Correct Answers?
-                new JoinQuizQuestion{ Quiz=quizDefs[0], Question=questionDefs[2], QuestionOrder=2 }, //Textual Question With Single Correct Answer... How many correct answers are there to this question?
-                new JoinQuizQuestion{ Quiz=quizDefs[0], Question=questionDefs[3], QuestionOrder=3 }, //Textual Question With Several Correct Answers... Can this question have more than one correct answer?
-                new JoinQuizQuestion{ Quiz=quizDefs[0], Question=questionDefs[4], QuestionOrder=4 }, //True/False Type Question With Traditional Answers?
-                new JoinQuizQuestion{ Quiz=quizDefs[0], Question=questionDefs[5], QuestionOrder=5 }  //True/False Type Question With Different Text For Answers?
+                new JoinQuizQuestion{ QuizId=demoQuizId, Question=questionDefs[0] }, //Multiple Choice Question With Single Correct Answer?
+                new JoinQuizQuestion{ QuizId=demoQuizId, Question=questionDefs[1] }, //Multiple Choice Question With Several Correct Answers?
+                new JoinQuizQuestion{ QuizId=demoQuizId, Question=questionDefs[2] }, //Textual Question With Single Correct Answer... How many correct answers are there to this question?
+                new JoinQuizQuestion{ QuizId=demoQuizId, Question=questionDefs[3] }, //Textual Question With Several Correct Answers... Can this question have more than one correct answer?
+                new JoinQuizQuestion{ QuizId=demoQuizId, Question=questionDefs[4] }, //True/False Type Question With Traditional Answers?
+                new JoinQuizQuestion{ QuizId=demoQuizId, Question=questionDefs[5] }  //True/False Type Question With Different Text For Answers?
             };
 
             // Add stuff to set up JoinQuizQuestion (QuizQuestionTbl)
@@ -91,36 +94,31 @@ namespace MIQuizAPI.Database
 
             var questionToAnswer = new JoinQuestionAnswer[] {
                 //Multiple Choice Question With Single Correct Answer?
-                new JoinQuestionAnswer{ Question=questionDefs[0], Answer = answerDefs[0], AnswerOrder=0, IsCorrectAnswer=true },  //This is a multiple choice type question with one correct answer.
-                new JoinQuestionAnswer{ Question=questionDefs[0], Answer = answerDefs[1], AnswerOrder=1, IsCorrectAnswer=false }, //This is not a multiple choice type question.
-                new JoinQuestionAnswer{ Question=questionDefs[0], Answer = answerDefs[2], AnswerOrder=2, IsCorrectAnswer=false }, //Pigs can fly every bit as well as an web application developer.
-                new JoinQuestionAnswer{ Question=questionDefs[0], Answer = answerDefs[3], AnswerOrder=3, IsCorrectAnswer=false }, //This is not the API you are looking for...
+                new JoinQuestionAnswer{ Question=questionDefs[0], Answer = answerDefs[0], IsCorrectAnswer=true },  //This is a multiple choice type question with one correct answer.
+                new JoinQuestionAnswer{ Question=questionDefs[0], Answer = answerDefs[1], IsCorrectAnswer=false }, //This is not a multiple choice type question.
+                new JoinQuestionAnswer{ Question=questionDefs[0], Answer = answerDefs[2], IsCorrectAnswer=false }, //Pigs can fly every bit as well as an web application developer.
+                new JoinQuestionAnswer{ Question=questionDefs[0], Answer = answerDefs[3], IsCorrectAnswer=false }, //This is not the API you are looking for...
                 //Multiple Choice Question With Several Correct Answers?
-                new JoinQuestionAnswer{ Question=questionDefs[1], Answer = answerDefs[4], AnswerOrder=0, IsCorrectAnswer=true },  //This is a multiple choice type question with several correct answers.
-                new JoinQuestionAnswer{ Question=questionDefs[1], Answer = answerDefs[5], AnswerOrder=1, IsCorrectAnswer=false }, //This is not a multiple choice type question.
-                new JoinQuestionAnswer{ Question=questionDefs[1], Answer = answerDefs[6], AnswerOrder=2, IsCorrectAnswer=true },  //This answer could be correct as well.
-                new JoinQuestionAnswer{ Question=questionDefs[1], Answer = answerDefs[7], AnswerOrder=3, IsCorrectAnswer=false }, //This is not the API you are looking for...
+                new JoinQuestionAnswer{ Question=questionDefs[1], Answer = answerDefs[4], IsCorrectAnswer=true },  //This is a multiple choice type question with several correct answers.
+                new JoinQuestionAnswer{ Question=questionDefs[1], Answer = answerDefs[5], IsCorrectAnswer=false }, //This is not a multiple choice type question.
+                new JoinQuestionAnswer{ Question=questionDefs[1], Answer = answerDefs[6], IsCorrectAnswer=true },  //This answer could be correct as well.
+                new JoinQuestionAnswer{ Question=questionDefs[1], Answer = answerDefs[7], IsCorrectAnswer=false }, //This is not the API you are looking for...
                 //Textual Question With Single Correct Answer... How many correct answers are there to this question?
-                new JoinQuestionAnswer{ Question=questionDefs[2], Answer = answerDefs[8], AnswerOrder=0, IsCorrectAnswer=true }, //one
-                new JoinQuestionAnswer{ Question=questionDefs[2], Answer = answerDefs[9], AnswerOrder=1, IsCorrectAnswer=true }, //1
+                new JoinQuestionAnswer{ Question=questionDefs[2], Answer = answerDefs[8], IsCorrectAnswer=true }, //one
+                new JoinQuestionAnswer{ Question=questionDefs[2], Answer = answerDefs[9], IsCorrectAnswer=true }, //1
                 //Textual Question With Several Correct Answers... Can this question have more than one correct answer?
-                new JoinQuestionAnswer{ Question=questionDefs[3], Answer = answerDefs[10], AnswerOrder=0, IsCorrectAnswer=true }, //yes
-                new JoinQuestionAnswer{ Question=questionDefs[3], Answer = answerDefs[11], AnswerOrder=1, IsCorrectAnswer=true }, //yup
-                new JoinQuestionAnswer{ Question=questionDefs[3], Answer = answerDefs[12], AnswerOrder=2, IsCorrectAnswer=true }, //absolutely
-                new JoinQuestionAnswer{ Question=questionDefs[3], Answer = answerDefs[13], AnswerOrder=2, IsCorrectAnswer=true }, //for sursies
+                new JoinQuestionAnswer{ Question=questionDefs[3], Answer = answerDefs[10], IsCorrectAnswer=true }, //yes
+                new JoinQuestionAnswer{ Question=questionDefs[3], Answer = answerDefs[11], IsCorrectAnswer=true }, //yup
+                new JoinQuestionAnswer{ Question=questionDefs[3], Answer = answerDefs[12], IsCorrectAnswer=true }, //absolutely
+                new JoinQuestionAnswer{ Question=questionDefs[3], Answer = answerDefs[13], IsCorrectAnswer=true }, //for sursies
                 //True/False Type Question With Traditional Answers?
-                new JoinQuestionAnswer{ Question=questionDefs[4], Answer = answerDefs[14], AnswerOrder=0, IsCorrectAnswer=true }, //True
-                new JoinQuestionAnswer{ Question=questionDefs[4], Answer = answerDefs[15], AnswerOrder=1, IsCorrectAnswer=true }, //False
+                new JoinQuestionAnswer{ Question=questionDefs[4], Answer = answerDefs[14], IsCorrectAnswer=true }, //True
+                new JoinQuestionAnswer{ Question=questionDefs[4], Answer = answerDefs[15], IsCorrectAnswer=true }, //False
                 //True/False Type Question With Different Text For Answers?
-                new JoinQuestionAnswer{ Question=questionDefs[5], Answer = answerDefs[16], AnswerOrder=0, IsCorrectAnswer=true }, //Whaaaaaaattttt...
-                new JoinQuestionAnswer{ Question=questionDefs[5], Answer = answerDefs[17], AnswerOrder=1, IsCorrectAnswer=true }  //Oh for sure it is!
+                new JoinQuestionAnswer{ Question=questionDefs[5], Answer = answerDefs[16], IsCorrectAnswer=true }, //Whaaaaaaattttt...
+                new JoinQuestionAnswer{ Question=questionDefs[5], Answer = answerDefs[17], IsCorrectAnswer=true }  //Oh for sure it is!
             };
 
-
-
-
-
-            // Add stuff to set up JoinQuestionAnswer (QuestionAnswerTbl)
             context.AddRange( questionToAnswer );
             context.SaveChanges();
 

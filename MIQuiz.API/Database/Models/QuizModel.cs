@@ -36,8 +36,7 @@ namespace MIQuizAPI.Database.Models {
         [DisplayName( "Active" )]
         public bool IsActive { get; set; }
 
-        [DisplayName( "Order" )]
-        public int? Order { get; set; }
+        public virtual User Owner { get; set; }
 
         public virtual ICollection<JoinQuizQuestion> Questions { get; } = new List<JoinQuizQuestion>();
     }

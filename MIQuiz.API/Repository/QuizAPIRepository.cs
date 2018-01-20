@@ -14,6 +14,18 @@ namespace MIQuizAPI.Repository {
         }
 
         #region Users Repo Members
+        // Add A New User
+        public void AddUser( User user ) {
+            // more to do here...
+            //example here ... http://www.thereformedprogrammer.net/updating-many-to-many-relationships-in-entity-framework-core/
+            _quizContext.Add( user );
+        }
+
+        /* TODO
+        void RemoveUser(int id);
+        void Update(Contacts item);
+         * */
+
         // List All Users
         public HashSet<User> ListUsers() {
             return _quizContext.Users
@@ -68,6 +80,18 @@ namespace MIQuizAPI.Repository {
         }
 
         #region Quiz Repo Members
+        // Add A New Quiz
+        public void AddQuiz( QuizDef quiz ) {
+            // more to do here...
+            //example here ... http://www.thereformedprogrammer.net/updating-many-to-many-relationships-in-entity-framework-core/
+            _quizContext.Add( quiz );
+        }
+
+        /* TODO
+        void RemoveQuiz(int id);
+        void UpdateQuiz(QuizDef quiz);
+         * */
+
         // List All Quizes
         public HashSet<QuizDef> ListQuizes() {
             return _quizContext.Quizes
@@ -77,52 +101,37 @@ namespace MIQuizAPI.Repository {
                                    Description = q.Description,
                                    GradingCriteria = q.GradingCriteria,
                                    Instructions = q.Instructions } )
-                               .OrderBy( q => q.Order )
                                .ToHashSet();
         }
 
         // Get All Quizes
         public HashSet<QuizDef> GetQuizes() {
             return _quizContext.Quizes
-                               .Include( q => q.Questions
-                                               .Where( questions => questions.Question.IsActive )
-                                               .OrderBy( questions => questions.QuestionOrder ) )
+                               .Include( q => q.Questions )
                                 .ThenInclude( questions => questions.Question )
-                                  .ThenInclude( question => question.Answers
-                                                                    .Where( answers => answers.Answer.IsActive )
-                                                                    .OrderBy( answers => answers.AnswerOrder ) )
+                                  .ThenInclude( question => question.Answers )
                                     .ThenInclude( answers => answers.Answer )
                                .Where( q => q.IsActive )
-                               .OrderBy( q => q.Order )
                                .ToHashSet();
         }
 
         //Get Quiz(es) By Id(s)
         public HashSet<QuizDef> GetQuizes( List<int> ids ) {
             return _quizContext.Quizes
-                               .Include( q => q.Questions
-                                               .Where( questions => questions.Question.IsActive )
-                                               .OrderBy( questions => questions.QuestionOrder ) )
+                               .Include( q => q.Questions )
                                 .ThenInclude( questions => questions.Question )
-                                  .ThenInclude( question => question.Answers
-                                                                    .Where( answers => answers.Answer.IsActive )
-                                                                    .OrderBy( answers => answers.AnswerOrder ) )
+                                  .ThenInclude( question => question.Answers )
                                     .ThenInclude( answers => answers.Answer )
                                .Where( q => ids.Contains( q.QuizId ) && q.IsActive )
-                               .OrderBy( q => q.Order )
                                .ToHashSet();
         }
 
         //Get Single Quiz By Id
         public QuizDef GetQuiz( int id ) {
             return _quizContext.Quizes
-                               .Include( q => q.Questions
-                                               .Where( questions => questions.Question.IsActive )
-                                               .OrderBy( questions => questions.QuestionOrder ) )
+                               .Include( q => q.Questions )
                                 .ThenInclude( questions => questions.Question )
-                                  .ThenInclude( question => question.Answers
-                                                                    .Where( answers => answers.Answer.IsActive )
-                                                                    .OrderBy( answers => answers.AnswerOrder ) )
+                                  .ThenInclude( question => question.Answers )
                                     .ThenInclude( answers => answers.Answer )
                                .SingleOrDefault( q => id.Equals( q.QuizId ) && q.IsActive );
         }
@@ -131,15 +140,10 @@ namespace MIQuizAPI.Repository {
         public HashSet<QuizDef> GetQuizesByOwnerIds( List<int> ids ) {
             return _quizContext.Quizes
                                .Where( q => ids.Contains( q.UserId ) && q.IsActive )
-                               .Include( q => q.Questions
-                                               .Where( questions => questions.Question.IsActive )
-                                               .OrderBy( questions => questions.QuestionOrder ) )
+                               .Include( q => q.Questions )
                                 .ThenInclude( questions => questions.Question )
-                                  .ThenInclude( question => question.Answers
-                                                                    .Where( answers => answers.Answer.IsActive )
-                                                                    .OrderBy( answers => answers.AnswerOrder ) )
+                                  .ThenInclude( question => question.Answers )
                                     .ThenInclude( answers => answers.Answer )
-                               .OrderBy( q => q.Order )
                                .ToHashSet();
         }
         #endregion
@@ -155,6 +159,20 @@ namespace MIQuizAPI.Repository {
         }
 
         #region Questions Repo Members
+        // Add A New Question
+        public void AddQuestion( QuestionDef question ) {
+            // more to do here...
+            //example here ... http://www.thereformedprogrammer.net/updating-many-to-many-relationships-in-entity-framework-core/
+            //_quizContext.Add( question );
+            //_quizContext.SaveChanges();
+        }
+
+        /* TODO
+        void RemoveQuiz(int id);
+        void UpdateQuiz(QuizDef quiz);
+         * */
+
+
         //List Questions
         public HashSet<QuestionDef> ListQuestions() {
             return _quizContext.Questions
@@ -179,9 +197,7 @@ namespace MIQuizAPI.Repository {
         //Get Questions By Ids
         public HashSet<QuestionDef> GetQuestions( List<int> ids ) {
             return _quizContext.Questions
-                               .Include( question => question.Answers
-                                                             .Where( answers => answers.Answer.IsActive )
-                                                             .OrderBy( answers => answers.AnswerOrder ) )
+                               .Include( question => question.Answers )
                                .ThenInclude( answers => answers.Answer )
                                .Where( q => ids.Contains( q.QuestionId ) && q.IsActive )
                                .ToHashSet();
@@ -192,9 +208,7 @@ namespace MIQuizAPI.Repository {
             return _quizContext.Questions
                                .Include( q => q.QuestionImage )
                                .Include( q => q.QuestionVideo )
-                               .Include( question => question.Answers
-                                                             .Where( answers => answers.Answer.IsActive )
-                                                             .OrderBy( answers => answers.AnswerOrder ) )
+                               .Include( question => question.Answers )
                                .ThenInclude( a => a.Answer )
                                .ThenInclude( ai => ai.AnswerImage )
                                .SingleOrDefault( q => id.Equals( q.QuestionId ) && q.IsActive );
@@ -204,8 +218,7 @@ namespace MIQuizAPI.Repository {
         public HashSet<AnswerDef> GetCorrectAnswers( int questionId ) {
             return _quizContext.Questions                               
                                .Include( question => question.Answers
-                                                             .Where( answers => answers.Answer.IsActive && answers.IsCorrectAnswer )
-                                                             .OrderBy( answers => answers.AnswerOrder ) )
+                                                             .Where( answers => answers.Answer.IsActive && answers.IsCorrectAnswer ) )
                                .ThenInclude( a => a.Answer )
                                .Single( q => questionId.Equals( q.QuestionId ) && q.IsActive ).Answers
                                .Select( a => a.Answer )
@@ -224,6 +237,20 @@ namespace MIQuizAPI.Repository {
         }
 
         #region Answers Repo Members
+        // Add A New Question
+        public void AddAnswer( int questionId, AnswerDef answer, bool isCorrectAnswer = false ) {
+            //Check that the question exists by question id...  bail if it doesn't exist
+            //answer.Question = build a new JoinQuestionAnswer object using quetionId and isCorrectAnswer
+            //example here ... http://www.thereformedprogrammer.net/updating-many-to-many-relationships-in-entity-framework-core/
+            //_quizContext.Add( answer );
+            //_quizContext.SaveChanges();
+        }
+
+        /* TODO
+        void RemoveAnswer(int id);
+        void UpdateAnswer(AnswerDef answer);
+         * */
+
         //List Answers To A Question By QuestionId
         public HashSet<AnswerDef> ListAnswersForQuestion( int questionId ) {
 
@@ -288,15 +315,11 @@ namespace MIQuizAPI.Repository {
         //List Correct Questions/Answers For A Quiz
         public HashSet<QuestionDef> AnswerSheetForQuiz( int quizId ) {
             var theseQuestion = _quizContext.Quizes
-                                            .Include( q => q.Questions
-                                                            .Where( questions => questions.Question.IsActive )
-                                                            .OrderBy( questions => questions.QuestionOrder ) )
+                                            .Include( q => q.Questions )
                                              .ThenInclude( questions => questions.Question )
-                                             .ThenInclude( question => question.Answers
-                                                                                .Where( answers => answers.Answer.IsActive )
-                                                                                .OrderBy( answers => answers.AnswerOrder ) )
+                                             .ThenInclude( question => question.Answers.Where( a => a.IsCorrectAnswer ) )
                                              .ThenInclude( answers => answers.Answer )
-                                             .Single( (q => quizId.Equals( q.UserId ) && q.IsActive) ).Questions;
+                                             .Single( (q => quizId.Equals( q.QuizId ) && q.IsActive) ).Questions;
 
             return theseQuestion.Select( q => q.Question )
                                 .ToHashSet();

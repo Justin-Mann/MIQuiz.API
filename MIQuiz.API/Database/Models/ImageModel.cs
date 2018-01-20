@@ -19,5 +19,9 @@ namespace MIQuizAPI.Database.Models {
 
         [DisplayName( "Active" )]
         public bool IsActive { get; set; }
+
+        public virtual IEnumerable<QuestionDef> Questions { get; set; }
+
+        public virtual IEnumerable<AnswerDef> Answers { get; set; }
     }
 }

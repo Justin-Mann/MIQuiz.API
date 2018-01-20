@@ -10,7 +10,7 @@ using MIQuizAPI.Repository;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MIQuizAPI.Controllers {
-    [Route( "api/quizes" )]
+    [Route( "api/users" )]
     public class UsersController : Controller {
         private readonly IUserRepository _userRepo;
 

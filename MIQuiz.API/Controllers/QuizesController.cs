@@ -25,24 +25,42 @@ namespace MIQuizAPI.Controllers {
         }
 
         // GET api/quizes/5
-        [HttpGet( "{id}" )]
-        public QuizDef Get( int id ) {
-            return _quizRepo.GetQuiz( id );
+        [HttpGet( "{id}" , Name = "GetQuizes")]
+        public IActionResult Get( int id ) {
+            var it = _quizRepo.GetQuiz( id );
+            if( it == null ) { return NotFound(); }
+            return new ObjectResult(it);
         }
 
         // POST api/quizes
         [HttpPost]
-        public void Post( [FromBody]string value ) {
+        public IActionResult Post( [FromBody] QuizDef quiz ) {
+            if( quiz == null ) {
+                return BadRequest();
+            }
+            _quizRepo.AddQuiz( quiz );
+            return CreatedAtRoute( "GetContacts", new { Controller = "Contacts", id = quiz.QuizId }, quiz );
         }
 
         // PUT api/quizes/5
         [HttpPut( "{id}" )]
-        public void Put( int id, [FromBody]string value ) {
+        public IActionResult Put( int id, [FromBody] QuizDef quiz ) {
+            if( quiz == null ) {
+                return BadRequest();
+            }
+            var contactObj = _quizRepo.GetQuiz( id );
+            if( contactObj == null ) {
+                return NotFound();
+            }
+//            _quizRepo.UpdateQuiz( quiz );
+            //return CreatedAtRoute( "GetContacts", new { Controller = "Contacts", id = item.QuizId }, item );
+            return new NoContentResult();
         }
 
         // DELETE api/quizes/5
         [HttpDelete( "{id}" )]
         public void Delete( int id ) {
+//            _quizRepo.RemoveQuiz( id );
         }
     }
 }

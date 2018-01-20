@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace MIQuizAPI.Database.Models {
-    [Table( "UsersTbl" )]
+    
     public class User {
         [Key]
         public int UserId { get; set; }

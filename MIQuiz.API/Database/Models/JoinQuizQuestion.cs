@@ -12,8 +12,6 @@ namespace MIQuizAPI.Database.Models
         public virtual QuizDef Quiz { get; set; }
 
         public int QuestionId { get; set; }
-        [DisplayName( "Question Order" )]
         public virtual QuestionDef Question { get; set; }
-        public int? QuestionOrder { get; set; }
     }
 }

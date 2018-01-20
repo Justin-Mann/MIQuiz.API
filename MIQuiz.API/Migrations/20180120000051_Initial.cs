@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace MIQuizAPI.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,10 +30,10 @@ namespace MIQuizAPI.Migrations
                 {
                     UserId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    FirstName = table.Column<string>(maxLength: 20, nullable: true),
+                    FirstName = table.Column<string>(maxLength: 20, nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
-                    LastName = table.Column<string>(maxLength: 20, nullable: true),
-                    Role = table.Column<int>(nullable: false),
+                    LastName = table.Column<string>(maxLength: 20, nullable: false),
+                    Role = table.Column<int>(nullable: false, defaultValue: 0),
                     UserName = table.Column<string>(maxLength: 25, nullable: false)
                 },
                 constraints: table =>
@@ -47,8 +47,8 @@ namespace MIQuizAPI.Migrations
                 {
                     VideoId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ImageURI = table.Column<string>(nullable: true),
-                    IsActive = table.Column<bool>(nullable: false)
+                    IsActive = table.Column<bool>(nullable: false),
+                    VideoURI = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,7 +66,6 @@ namespace MIQuizAPI.Migrations
                     Instructions = table.Column<string>(maxLength: 500, nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(maxLength: 20, nullable: false),
-                    Order = table.Column<int>(nullable: true),
                     UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -77,7 +76,7 @@ namespace MIQuizAPI.Migrations
                         column: x => x.UserId,
                         principalTable: "UsersTbl",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,23 +85,23 @@ namespace MIQuizAPI.Migrations
                 {
                     AnswerId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    AnswerImageImageId = table.Column<int>(nullable: true),
-                    AnswerVideoVideoId = table.Column<int>(nullable: true),
+                    ImageId = table.Column<int>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
-                    Text = table.Column<string>(maxLength: 250, nullable: true)
+                    Text = table.Column<string>(maxLength: 250, nullable: false),
+                    VideoId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AnswerTbl", x => x.AnswerId);
                     table.ForeignKey(
-                        name: "FK_AnswerTbl_ImagesTbl_AnswerImageImageId",
-                        column: x => x.AnswerImageImageId,
+                        name: "FK_AnswerTbl_ImagesTbl_ImageId",
+                        column: x => x.ImageId,
                         principalTable: "ImagesTbl",
                         principalColumn: "ImageId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AnswerTbl_VideosTbl_AnswerVideoVideoId",
-                        column: x => x.AnswerVideoVideoId,
+                        name: "FK_AnswerTbl_VideosTbl_VideoId",
+                        column: x => x.VideoId,
                         principalTable: "VideosTbl",
                         principalColumn: "VideoId",
                         onDelete: ReferentialAction.Restrict);
@@ -114,24 +113,24 @@ namespace MIQuizAPI.Migrations
                 {
                     QuestionId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ImageId = table.Column<int>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
-                    QuestionImageImageId = table.Column<int>(nullable: true),
-                    QuestionVideoVideoId = table.Column<int>(nullable: true),
-                    Text = table.Column<string>(maxLength: 250, nullable: true),
-                    Type = table.Column<string>(nullable: false)
+                    Text = table.Column<string>(maxLength: 250, nullable: false),
+                    Type = table.Column<string>(nullable: false),
+                    VideoId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_QuestionTbl", x => x.QuestionId);
                     table.ForeignKey(
-                        name: "FK_QuestionTbl_ImagesTbl_QuestionImageImageId",
-                        column: x => x.QuestionImageImageId,
+                        name: "FK_QuestionTbl_ImagesTbl_ImageId",
+                        column: x => x.ImageId,
                         principalTable: "ImagesTbl",
                         principalColumn: "ImageId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_QuestionTbl_VideosTbl_QuestionVideoVideoId",
-                        column: x => x.QuestionVideoVideoId,
+                        name: "FK_QuestionTbl_VideosTbl_VideoId",
+                        column: x => x.VideoId,
                         principalTable: "VideosTbl",
                         principalColumn: "VideoId",
                         onDelete: ReferentialAction.Restrict);
@@ -143,7 +142,6 @@ namespace MIQuizAPI.Migrations
                 {
                     AnswerId = table.Column<int>(nullable: false),
                     QuestionId = table.Column<int>(nullable: false),
-                    AnswerOrder = table.Column<int>(nullable: true),
                     IsCorrectAnswer = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -154,13 +152,13 @@ namespace MIQuizAPI.Migrations
                         column: x => x.AnswerId,
                         principalTable: "AnswerTbl",
                         principalColumn: "AnswerId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_QuestionAnswerTbl_QuestionTbl_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "QuestionTbl",
                         principalColumn: "QuestionId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -168,8 +166,7 @@ namespace MIQuizAPI.Migrations
                 columns: table => new
                 {
                     QuizId = table.Column<int>(nullable: false),
-                    QuestionId = table.Column<int>(nullable: false),
-                    QuestionOrder = table.Column<int>(nullable: true)
+                    QuestionId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -179,24 +176,24 @@ namespace MIQuizAPI.Migrations
                         column: x => x.QuestionId,
                         principalTable: "QuestionTbl",
                         principalColumn: "QuestionId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_QuizQuestionTbl_QuizTbl_QuizId",
                         column: x => x.QuizId,
                         principalTable: "QuizTbl",
                         principalColumn: "QuizId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnswerTbl_AnswerImageImageId",
+                name: "IX_AnswerTbl_ImageId",
                 table: "AnswerTbl",
-                column: "AnswerImageImageId");
+                column: "ImageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnswerTbl_AnswerVideoVideoId",
+                name: "IX_AnswerTbl_VideoId",
                 table: "AnswerTbl",
-                column: "AnswerVideoVideoId");
+                column: "VideoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_QuestionAnswerTbl_QuestionId",
@@ -204,14 +201,14 @@ namespace MIQuizAPI.Migrations
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionTbl_QuestionImageImageId",
+                name: "IX_QuestionTbl_ImageId",
                 table: "QuestionTbl",
-                column: "QuestionImageImageId");
+                column: "ImageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionTbl_QuestionVideoVideoId",
+                name: "IX_QuestionTbl_VideoId",
                 table: "QuestionTbl",
-                column: "QuestionVideoVideoId");
+                column: "VideoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_QuizQuestionTbl_QuestionId",

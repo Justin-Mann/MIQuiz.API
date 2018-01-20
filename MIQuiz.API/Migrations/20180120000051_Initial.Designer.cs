@@ -11,8 +11,8 @@ using System;
 namespace MIQuizAPI.Migrations
 {
     [DbContext(typeof(MIQuizContext))]
-    [Migration("20180112235202_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20180120000051_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,20 +26,21 @@ namespace MIQuizAPI.Migrations
                     b.Property<int>("AnswerId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("AnswerImageImageId");
-
-                    b.Property<int?>("AnswerVideoVideoId");
+                    b.Property<int?>("ImageId");
 
                     b.Property<bool>("IsActive");
 
                     b.Property<string>("Text")
+                        .IsRequired()
                         .HasMaxLength(250);
+
+                    b.Property<int?>("VideoId");
 
                     b.HasKey("AnswerId");
 
-                    b.HasIndex("AnswerImageImageId");
+                    b.HasIndex("ImageId");
 
-                    b.HasIndex("AnswerVideoVideoId");
+                    b.HasIndex("VideoId");
 
                     b.ToTable("AnswerTbl");
                 });
@@ -66,8 +67,6 @@ namespace MIQuizAPI.Migrations
 
                     b.Property<int>("QuestionId");
 
-                    b.Property<int?>("AnswerOrder");
-
                     b.Property<bool>("IsCorrectAnswer");
 
                     b.HasKey("AnswerId", "QuestionId");
@@ -83,8 +82,6 @@ namespace MIQuizAPI.Migrations
 
                     b.Property<int>("QuestionId");
 
-                    b.Property<int?>("QuestionOrder");
-
                     b.HasKey("QuizId", "QuestionId");
 
                     b.HasIndex("QuestionId");
@@ -97,23 +94,24 @@ namespace MIQuizAPI.Migrations
                     b.Property<int>("QuestionId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("ImageId");
+
                     b.Property<bool>("IsActive");
 
-                    b.Property<int?>("QuestionImageImageId");
-
-                    b.Property<int?>("QuestionVideoVideoId");
-
                     b.Property<string>("Text")
+                        .IsRequired()
                         .HasMaxLength(250);
 
                     b.Property<string>("Type")
                         .IsRequired();
 
+                    b.Property<int?>("VideoId");
+
                     b.HasKey("QuestionId");
 
-                    b.HasIndex("QuestionImageImageId");
+                    b.HasIndex("ImageId");
 
-                    b.HasIndex("QuestionVideoVideoId");
+                    b.HasIndex("VideoId");
 
                     b.ToTable("QuestionTbl");
                 });
@@ -138,8 +136,6 @@ namespace MIQuizAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(20);
 
-                    b.Property<int?>("Order");
-
                     b.Property<int>("UserId");
 
                     b.HasKey("QuizId");
@@ -155,14 +151,18 @@ namespace MIQuizAPI.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasMaxLength(20);
 
                     b.Property<bool>("IsActive");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasMaxLength(20);
 
-                    b.Property<int>("Role");
+                    b.Property<int>("Role")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(0);
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -178,9 +178,10 @@ namespace MIQuizAPI.Migrations
                     b.Property<int>("VideoId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ImageURI");
-
                     b.Property<bool>("IsActive");
+
+                    b.Property<string>("VideoURI")
+                        .IsRequired();
 
                     b.HasKey("VideoId");
 
@@ -190,12 +191,14 @@ namespace MIQuizAPI.Migrations
             modelBuilder.Entity("MIQuizAPI.Database.Models.AnswerDef", b =>
                 {
                     b.HasOne("MIQuizAPI.Database.Models.Image", "AnswerImage")
-                        .WithMany()
-                        .HasForeignKey("AnswerImageImageId");
+                        .WithMany("Answers")
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MIQuizAPI.Database.Models.Video", "AnswerVideo")
-                        .WithMany()
-                        .HasForeignKey("AnswerVideoVideoId");
+                        .WithMany("Anwsers")
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("MIQuizAPI.Database.Models.JoinQuestionAnswer", b =>
@@ -203,12 +206,12 @@ namespace MIQuizAPI.Migrations
                     b.HasOne("MIQuizAPI.Database.Models.AnswerDef", "Answer")
                         .WithMany("Question")
                         .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MIQuizAPI.Database.Models.QuestionDef", "Question")
                         .WithMany("Answers")
                         .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("MIQuizAPI.Database.Models.JoinQuizQuestion", b =>
@@ -216,31 +219,33 @@ namespace MIQuizAPI.Migrations
                     b.HasOne("MIQuizAPI.Database.Models.QuestionDef", "Question")
                         .WithMany("Quizes")
                         .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MIQuizAPI.Database.Models.QuizDef", "Quiz")
                         .WithMany("Questions")
                         .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("MIQuizAPI.Database.Models.QuestionDef", b =>
                 {
                     b.HasOne("MIQuizAPI.Database.Models.Image", "QuestionImage")
-                        .WithMany()
-                        .HasForeignKey("QuestionImageImageId");
+                        .WithMany("Questions")
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MIQuizAPI.Database.Models.Video", "QuestionVideo")
-                        .WithMany()
-                        .HasForeignKey("QuestionVideoVideoId");
+                        .WithMany("Questions")
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("MIQuizAPI.Database.Models.QuizDef", b =>
                 {
-                    b.HasOne("MIQuizAPI.Database.Models.User")
+                    b.HasOne("MIQuizAPI.Database.Models.User", "Owner")
                         .WithMany("CreatedQuizes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }
