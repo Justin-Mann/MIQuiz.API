@@ -12,7 +12,6 @@ namespace MIQuizAPI.Database.Models {
         [Key]
         public int QuizId { get; set; }
 
-        //TODO: Index On This Field
         public int UserId { get; set; }
 
         [DisplayName( "Quiz Name" )]
