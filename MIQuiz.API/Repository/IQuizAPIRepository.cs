@@ -1,97 +1,163 @@
 ﻿using System.Collections.Generic;
 using MIQuizAPI.Database.Models;
+using System.Threading.Tasks;
 
 namespace MIQuizAPI.Repository {
     #region Users Repo Interface
     public interface IUserRepository {
         // Add A New User
-        void AddUser( User user );
+        Task Add( User user );
+
+        // Remove A User
+        Task Remove( int id );
+
+        // Update A User
+        Task Update( User user);
 
         // List Users
-        HashSet<User> ListUsers();
+        Task<IEnumerable<User>> ListAll();
 
-        //// Get Users
-        HashSet<User> GetUsers();
+        // Get Users
+        Task<IEnumerable<User>> GetAll();
 
-        //// Get User(s) By Id(s)
-        HashSet<User> GetUsers( List<int> ids );
+        // Get User(s) By Id(s)
+        Task<IEnumerable<User>> GetByIds( List<int> ids );
 
-        //// Get User By Id
-        User GetUser( int id );
+        // Get User By Id
+        Task<User> GetById( int id );
 
-        //// Get User By Id -- synonym for GetQuizesByOwnerIds
-        User GetAdminUserQuizes( int id );
+        // Get User By Id -- synonym for GetQuizesByOwnerIds
+        Task<User> GetByUserId( int id );
     }
     #endregion
 
     #region Quizes Repo Interface
     public interface IQuizRepository {
         // Add A New Quiz
-        void AddQuiz( QuizDef quiz );
+        Task Add( QuizDef quiz );
+
+        // Remove A Quiz
+        Task Remove( int id );
+
+        // Update A Quiz
+        Task Update( QuizDef quiz );
 
         // List All Quizes
-        HashSet<QuizDef> ListQuizes();
+        Task<IEnumerable<QuizDef>> ListAll();
 
         // Get All Quizes
-        HashSet<QuizDef> GetQuizes();
+        Task<IEnumerable<QuizDef>> GetAll();
 
         //Get Quiz(es) By Id(s)
-        HashSet<QuizDef> GetQuizes( List<int> ids );
+        Task<IEnumerable<QuizDef>> GetByIds( List<int> ids );
 
         //Get Single Quiz By Id
-        QuizDef GetQuiz( int id );
+        Task<QuizDef> GetById( int id );
 
         //Get Quizes By OwnerId
-        HashSet<QuizDef> GetQuizesByOwnerIds( List<int> ids );
+        Task<IEnumerable<QuizDef>> GetByOwnerIds( List<int> ids );
     }
     #endregion
 
     #region Questions Repo Interface
     public interface IQuestionRepository {
+        // Add A New Question
+        Task Add( QuestionDef question );
+
+        // Remove A Question
+        Task Remove( int id );
+
+        // Update A Question
+        Task Update( QuestionDef question );
+
         //List Questions
-        HashSet<QuestionDef> ListQuestions();
+        Task<IEnumerable<QuestionDef>> ListAll();
+
+        //Get All Questions
+        Task<IEnumerable<QuestionDef>> GetAll();
 
         //List Questions On A Quiz By QuizId
-        HashSet<QuestionDef> ListQuestionsForQuiz( int id );
+        Task<IEnumerable<QuestionDef>> ListByQuizId( int id );
 
         //Get Questions By Ids
-        HashSet<QuestionDef> GetQuestions( List<int> ids );
+        Task<IEnumerable<QuestionDef>> GetByIds( List<int> ids );
 
         //Get Question By Id
-        QuestionDef GetQuestion( int id );
+        Task<QuestionDef> GetById( int id );
 
-        HashSet<AnswerDef> GetCorrectAnswers( int questionId );
+        Task<IEnumerable<AnswerDef>> GetCorrectAnswersByQuestionId( int questionId );
     }
     #endregion
 
     #region Answers Repo Interface
     public interface IAnswerRepository {
-        //List Answers To A Question By QuestionId
-        HashSet<AnswerDef> ListAnswersForQuestion( int id );
+        // Add A New Answer
+        Task Add( AnswerDef answer );
 
-        //List All Answers To A Set Of Questions By QuestionIds
-        //HashSet<AnswerDef> ListAnswersForQuestions( List<int> ids );
+        // Remove A Answer
+        Task Remove( int id );
+
+        // Update A Answer
+        Task Update( AnswerDef answer );
+
+        //List Answers To A Question By QuestionId
+        Task<IEnumerable<AnswerDef>> ListByQuestionId( int questionId );
 
         //Get All Answers To A Set Of Questions By QuestionId
-        HashSet<AnswerDef> GetAnswersForQuestions( List<int> ids );
+        Task<IEnumerable<AnswerDef>> GetByQuestionIds( List<int> questionIds );
 
         //Get All Answers To A Question By QuestionId
-        HashSet<AnswerDef> GetAnswersForQuestion( int id );
-
-        //Get Single/Several Answers By Ids
-        HashSet<AnswerDef> GetAnswers( List<int> ids );
-
-        //Get Answer By Id
-        AnswerDef GetAnswer( int id );
+        Task<IEnumerable<AnswerDef>> GetByQuestionId( int questionId );
 
         //Get Correct Answer By QuestionId
-        //HashSet<AnswerDef> GetCorrectAnswersForQuestion( int id );
+        Task<IEnumerable<AnswerDef>> GetCorrectAnswersByQuestionId( int id );
 
-        //Check Correctness of an Answer By AnswerId
-        bool CheckAnswer( int questionId, int answerId );
+        //Get Single/Several Answers By Ids
+        Task<IEnumerable<AnswerDef>> GetByIds( List<int> ids );
+
+        //Get Answer By Id
+        Task<AnswerDef> GetById( int id );
 
         //List Correct Questions/Answers For A Quiz
-        HashSet<QuestionDef> AnswerSheetForQuiz( int id );
+        Task<IEnumerable<QuestionDef>> GetAnswersByQuizId( int id );
+    }
+    #endregion
+
+    #region Images Repo Interface
+    public interface IImageRepository {
+        // Add A New Image
+        Task Add( Image image );
+
+        // Remove A Image
+        Task Remove( int id );
+
+        // Update A Image
+        Task Update( Image image );
+
+        //Get Images By Ids
+        Task<IEnumerable<Image>> GetByIds( List<int> ids );
+
+        //Get Image By Id
+        Task<Image> GetById( int id );
+    }
+    #endregion
+
+    #region Videos Repo Interface
+    public interface IVideoRepository {
+        // Add A New Video
+        Task Add( Video video );
+
+        // Remove A Video
+        Task Remove( int id );
+
+        // Update A Video
+        Task Update( Video video );
+
+        //Get Videos By Ids
+        Task<IEnumerable<Video>> GetByIds( List<int> ids );
+
+        //Get Video By Id
+        Task<Video> GetById( int id );
     }
     #endregion
 }

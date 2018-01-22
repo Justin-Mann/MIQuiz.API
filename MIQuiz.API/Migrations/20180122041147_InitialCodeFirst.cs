@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace MIQuizAPI.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCodeFirst : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

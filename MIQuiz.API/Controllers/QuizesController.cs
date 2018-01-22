@@ -19,48 +19,49 @@ namespace MIQuizAPI.Controllers {
         }
 
         // GET: api/quizes
-        [HttpGet]
-        public IEnumerable<QuizDef> Get() {
-            return _quizRepo.GetQuizes();
+        [HttpGet( Name = "GetQuizes" )]
+        public async Task<IActionResult> GetAll() {
+            var quizes = await _quizRepo.GetAll();
+            return Ok( quizes );
         }
 
         // GET api/quizes/5
-        [HttpGet( "{id}" , Name = "GetQuizes")]
-        public IActionResult Get( int id ) {
-            var it = _quizRepo.GetQuiz( id );
-            if( it == null ) { return NotFound(); }
-            return new ObjectResult(it);
+        [HttpGet( "{id}", Name = "GetQuiz" )]
+        public async Task<IActionResult> Get( int id ) {
+            var quiz = await _quizRepo.GetById( id );
+            if( quiz == null ) { return NotFound(); }
+            return Ok( quiz );
         }
 
-        // POST api/quizes
         [HttpPost]
-        public IActionResult Post( [FromBody] QuizDef quiz ) {
-            if( quiz == null ) {
+        public async Task<IActionResult> Create( [FromBody] QuizDef Quiz ) {
+            if( Quiz == null ) {
                 return BadRequest();
             }
-            _quizRepo.AddQuiz( quiz );
-            return CreatedAtRoute( "GetContacts", new { Controller = "Contacts", id = quiz.QuizId }, quiz );
+            await _quizRepo.Add( Quiz );
+            return CreatedAtRoute( "GetQuiz", new { Controller = "Quizes", id = Quiz.QuizId }, Quiz );
         }
 
         // PUT api/quizes/5
         [HttpPut( "{id}" )]
-        public IActionResult Put( int id, [FromBody] QuizDef quiz ) {
-            if( quiz == null ) {
-                return BadRequest();
-            }
-            var contactObj = _quizRepo.GetQuiz( id );
-            if( contactObj == null ) {
+        public async Task<IActionResult> Put( int id, [FromBody] QuizDef Quiz ) {
+            if( Quiz == null ) {
                 return NotFound();
             }
-//            _quizRepo.UpdateQuiz( quiz );
-            //return CreatedAtRoute( "GetContacts", new { Controller = "Contacts", id = item.QuizId }, item );
-            return new NoContentResult();
+            Quiz.QuizId = id;
+            await _quizRepo.Update( Quiz );
+            return RedirectToRoute( "GetQuiz", new { Controller = "Quizes", id = Quiz.QuizId } );
         }
 
         // DELETE api/quizes/5
         [HttpDelete( "{id}" )]
-        public void Delete( int id ) {
-//            _quizRepo.RemoveQuiz( id );
+        public async Task<IActionResult> Delete( int id ) {
+            var updateTarget = _quizRepo.GetById( id );
+            if( updateTarget == null ) {
+                return NotFound();
+            }
+            await _quizRepo.Remove( id );
+            return RedirectToRoute( "GetQuizes", new { Controller = "Quizes" } );
         }
     }
 }

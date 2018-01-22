@@ -19,30 +19,48 @@ namespace MIQuizAPI.Controllers {
         }
 
         // GET: api/users
-        [HttpGet]
-        public IEnumerable<User> Get() {
-            return _userRepo.GetUsers();
+        [HttpGet( Name = "GetUsers" )]
+        public async Task<IActionResult> GetAll() {
+            var users = await _userRepo.GetAll();
+            return Ok( users );
         }
 
         // GET api/users/5
-        [HttpGet( "{id}" )]
-        public User Get( int id ) {
-            return _userRepo.GetUser( id );
+        [HttpGet( "{id}", Name = "GetUser" )]
+        public async Task<IActionResult> Get( int id ) {
+            var user = await _userRepo.GetById( id );
+            return Ok( user );
         }
 
         // POST api/users
         [HttpPost]
-        public void Post( [FromBody]string value ) {
+        public async Task<IActionResult> Create( [FromBody] User User ) {
+            if( User == null ) {
+                return BadRequest();
+            }
+            await _userRepo.Add( User );
+            return CreatedAtRoute( "GetUser", new { Controller = "Users", id = User.UserId }, User );
         }
 
         // PUT api/users/5
         [HttpPut( "{id}" )]
-        public void Put( int id, [FromBody]string value ) {
+        public async Task<IActionResult> Put( int id, [FromBody] User User ) {
+            if( User == null ) {
+                return BadRequest();
+            }
+            await _userRepo.Update( User );
+            return RedirectToRoute( "GetUser", new { Controller = "Users", id = User.UserId } );
         }
 
         // DELETE api/users/5
         [HttpDelete( "{id}" )]
-        public void Delete( int id ) {
+        public async Task<IActionResult> Delete( int id ) {
+            var removeTarget = _userRepo.GetById( id );
+            if( removeTarget == null ) {
+                return NotFound();
+            }
+            await _userRepo.Remove( id );
+            return RedirectToRoute( "GetUsers", new { Controller = "Users" } );
         }
     }
 }

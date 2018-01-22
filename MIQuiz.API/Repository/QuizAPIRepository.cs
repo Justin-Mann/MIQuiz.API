@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using MIQuizAPI.Database.Models;
 using MIQuizAPI.Database.Context;
+using System;
+using System.Threading.Tasks;
 
 namespace MIQuizAPI.Repository {
     #region User Repo Concrete Implementation
@@ -15,57 +17,68 @@ namespace MIQuizAPI.Repository {
 
         #region Users Repo Members
         // Add A New User
-        public void AddUser( User user ) {
-            // more to do here...
-            //example here ... http://www.thereformedprogrammer.net/updating-many-to-many-relationships-in-entity-framework-core/
-            _quizContext.Add( user );
+        public async Task Add( User user ) {
+            if( user != null ) {
+                await _quizContext.Users.AddAsync( user );
+                await _quizContext.SaveChangesAsync();
+            }
         }
 
-        /* TODO
-        void RemoveUser(int id);
-        void Update(Contacts item);
-         * */
+        public async Task Remove( int id ) {
+            var user = await _quizContext.Users.FindAsync( id );
+            if( user != null ) {
+                _quizContext.Users.Remove( user );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task Update( User user ) {
+            if( user != null ) {
+                _quizContext.Users.Update( user );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
 
         // List All Users
-        public HashSet<User> ListUsers() {
-            return _quizContext.Users
+        public async Task<IEnumerable<User>> ListAll() {
+            return await _quizContext.Users
                                .Where( u => u.IsActive )
                                .Select( u => new User {
                                    UserName = u.UserName,
                                    FirstName = u.FirstName,
                                    LastName = u.LastName } )
-                               .ToHashSet();
+                               .ToListAsync();
         }
 
         // Get Users
-        public HashSet<User> GetUsers() {
-            return _quizContext.Users
+        public async Task<IEnumerable<User>> GetAll() {
+            return await _quizContext.Users
                                .Where( u => u.IsActive )
-                               .ToHashSet();
+                               .ToListAsync();
         }
 
         // Get User(s) By Id(s)
-        public HashSet<User> GetUsers( List<int> ids ) {
-            return _quizContext.Users
+        public async Task<IEnumerable<User>> GetByIds( List<int> ids ) {
+            return await _quizContext.Users
                                .Where( u => ids.Contains( u.UserId ) && u.IsActive )
-                               .ToHashSet();
+                               .ToListAsync();
         }
 
         // Get User By Id
-        public User GetUser( int id ) {
-            return _quizContext.Users
-                               .SingleOrDefault( u => id.Equals( u.UserId ) && u.IsActive );
+        public async Task<User> GetById( int id ) {
+            return await _quizContext.Users
+                               .SingleOrDefaultAsync( u => id.Equals( u.UserId ) && u.IsActive );
         }
 
         // Get User & All Owned Quiz Info By Id
-        public User GetAdminUserQuizes( int id ) {
-            return _quizContext.Users
+        public async Task<User> GetByUserId( int id ) {
+            return await _quizContext.Users
                                .Include( u => u.CreatedQuizes )
                                 .ThenInclude( q => q.Questions )
                                   .ThenInclude( questions => questions.Question )
                                     .ThenInclude( question => question.Answers )
                                       .ThenInclude( answers => answers.Answer )
-                               .SingleOrDefault( u => id.Equals( u.UserId ) && u.Role >= 1 );
+                               .SingleOrDefaultAsync( u => id.Equals( u.UserId ) );
         }
         #endregion
     }
@@ -81,70 +94,81 @@ namespace MIQuizAPI.Repository {
 
         #region Quiz Repo Members
         // Add A New Quiz
-        public void AddQuiz( QuizDef quiz ) {
-            // more to do here...
-            //example here ... http://www.thereformedprogrammer.net/updating-many-to-many-relationships-in-entity-framework-core/
-            _quizContext.Add( quiz );
+        public async Task Add( QuizDef quiz ) {
+            if( quiz != null ) {
+                await _quizContext.Quizes.AddAsync( quiz );
+                await _quizContext.SaveChangesAsync();
+            }
         }
 
-        /* TODO
-        void RemoveQuiz(int id);
-        void UpdateQuiz(QuizDef quiz);
-         * */
+        public async Task Remove( int id ) {
+            var quiz = await _quizContext.Quizes.FindAsync( id );
+            if ( quiz != null ) {
+                _quizContext.Quizes.Remove( quiz );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task Update( QuizDef quiz ) {
+            if( quiz != null ) {
+                _quizContext.Quizes.Update( quiz );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
 
         // List All Quizes
-        public HashSet<QuizDef> ListQuizes() {
-            return _quizContext.Quizes
+        public async Task<IEnumerable<QuizDef>> ListAll() {
+            return await _quizContext.Quizes
                                .Where( q => q.IsActive )
                                .Select( q => new QuizDef {
                                    Name = q.Name,
                                    Description = q.Description,
                                    GradingCriteria = q.GradingCriteria,
                                    Instructions = q.Instructions } )
-                               .ToHashSet();
+                               .ToListAsync();
         }
 
         // Get All Quizes
-        public HashSet<QuizDef> GetQuizes() {
-            return _quizContext.Quizes
+        public async Task<IEnumerable<QuizDef>> GetAll() {
+            return await _quizContext.Quizes
                                .Include( q => q.Questions )
                                 .ThenInclude( questions => questions.Question )
                                   .ThenInclude( question => question.Answers )
                                     .ThenInclude( answers => answers.Answer )
                                .Where( q => q.IsActive )
-                               .ToHashSet();
+                               .ToListAsync();
         }
 
         //Get Quiz(es) By Id(s)
-        public HashSet<QuizDef> GetQuizes( List<int> ids ) {
-            return _quizContext.Quizes
+        public async Task<IEnumerable<QuizDef>> GetByIds( List<int> ids ) {
+            return await _quizContext.Quizes
                                .Include( q => q.Questions )
                                 .ThenInclude( questions => questions.Question )
                                   .ThenInclude( question => question.Answers )
                                     .ThenInclude( answers => answers.Answer )
                                .Where( q => ids.Contains( q.QuizId ) && q.IsActive )
-                               .ToHashSet();
+                               .ToListAsync();
         }
 
         //Get Single Quiz By Id
-        public QuizDef GetQuiz( int id ) {
-            return _quizContext.Quizes
+        public async Task<QuizDef> GetById( int id ) {
+            return await _quizContext.Quizes
                                .Include( q => q.Questions )
                                 .ThenInclude( questions => questions.Question )
                                   .ThenInclude( question => question.Answers )
                                     .ThenInclude( answers => answers.Answer )
-                               .SingleOrDefault( q => id.Equals( q.QuizId ) && q.IsActive );
+                               .SingleOrDefaultAsync( q => id.Equals( q.QuizId ) && q.IsActive );
         }
 
         ////Get Quizes By OwnerId
-        public HashSet<QuizDef> GetQuizesByOwnerIds( List<int> ids ) {
-            return _quizContext.Quizes
+        public async Task<IEnumerable<QuizDef>> GetByOwnerIds( List<int> ids ) {
+            return await _quizContext.Quizes
                                .Where( q => ids.Contains( q.UserId ) && q.IsActive )
                                .Include( q => q.Questions )
                                 .ThenInclude( questions => questions.Question )
                                   .ThenInclude( question => question.Answers )
                                     .ThenInclude( answers => answers.Answer )
-                               .ToHashSet();
+                               .ToListAsync();
         }
         #endregion
     }
@@ -160,69 +184,102 @@ namespace MIQuizAPI.Repository {
 
         #region Questions Repo Members
         // Add A New Question
-        public void AddQuestion( QuestionDef question ) {
-            // more to do here...
-            //example here ... http://www.thereformedprogrammer.net/updating-many-to-many-relationships-in-entity-framework-core/
-            //_quizContext.Add( question );
-            //_quizContext.SaveChanges();
+        public async Task Add( QuestionDef question ) {
+            if( question != null ) {
+                await _quizContext.Questions.AddAsync( question );
+                await _quizContext.SaveChangesAsync();
+            }
         }
 
-        /* TODO
-        void RemoveQuiz(int id);
-        void UpdateQuiz(QuizDef quiz);
-         * */
+        // Remove An Existing Question
+        public async Task Remove( int id ) {
+            var question = await _quizContext.Questions.FindAsync( id );
+            if( question != null ) {
+                _quizContext.Questions.Remove( question );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
 
+        // Update An Existing Question
+        public async Task Update( QuestionDef question ) {
+            if( question != null ) {
+                _quizContext.Questions.Update( question );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
 
         //List Questions
-        public HashSet<QuestionDef> ListQuestions() {
-            return _quizContext.Questions
+        public async Task<IEnumerable<QuestionDef>> ListAll() {
+            return await _quizContext.Questions
+                               .Include( question => question.QuestionImage )
+                               .Include( question => question.QuestionVideo )
+                               .Include( question => question.Answers )
+                                 .ThenInclude( answers => answers.Answer )
                                .Where( question => question.IsActive )
                                .Select( q => new QuestionDef {
                                    Text = q.Text,
                                    Type = q.Type } )
-                               .ToHashSet();
+                               .ToListAsync();
+        }
+
+        // Get All Quizes
+        public async Task<IEnumerable<QuestionDef>> GetAll() {
+            return await _quizContext.Questions
+                               .Include( question => question.QuestionImage )
+                               .Include( question => question.QuestionVideo )
+                               .Include( question => question.Answers )
+                                 .ThenInclude( answers => answers.Answer )
+                               .Where( question => question.IsActive )
+                               .ToListAsync();
         }
 
         //List Questions On A Quiz By QuizId
-        public HashSet<QuestionDef> ListQuestionsForQuiz( int quizId ) {
-            return _quizContext.Questions
-                               .Where( question => question.Quizes.Select( quiz => quiz.QuestionId ).Contains( quizId ) && 
+        public async Task<IEnumerable<QuestionDef>> ListByQuizId( int quizId ) {
+            return await _quizContext.Questions
+                               .Include( question => question.QuestionImage )
+                               .Include( question => question.QuestionVideo )
+                               .Include( question => question.Answers )
+                                 .ThenInclude( answers => answers.Answer )
+                                   .ThenInclude( ai => ai.AnswerImage )
+                               .Where( question => question.Quizes.Select( quiz => quiz.QuestionId ).Contains( quizId ) &&
                                                    question.IsActive )
                                .Select( q => new QuestionDef {
                                    Text = q.Text,
                                    Type = q.Type } )
-                               .ToHashSet();
+                               .ToListAsync();
         }
 
         //Get Questions By Ids
-        public HashSet<QuestionDef> GetQuestions( List<int> ids ) {
-            return _quizContext.Questions
+        public async Task<IEnumerable<QuestionDef>> GetByIds( List<int> ids ) {
+            return await _quizContext.Questions
+                               .Include( question => question.QuestionImage )
+                               .Include( question => question.QuestionVideo )
                                .Include( question => question.Answers )
-                               .ThenInclude( answers => answers.Answer )
+                                 .ThenInclude( answers => answers.Answer )
+                                   .ThenInclude( ai => ai.AnswerImage )
                                .Where( q => ids.Contains( q.QuestionId ) && q.IsActive )
-                               .ToHashSet();
+                               .ToListAsync();
         }
 
         //Get Question By Id
-        public QuestionDef GetQuestion( int id ) {
-            return _quizContext.Questions
+        public async Task<QuestionDef> GetById( int id ) {
+            return await _quizContext.Questions
                                .Include( q => q.QuestionImage )
                                .Include( q => q.QuestionVideo )
                                .Include( question => question.Answers )
-                               .ThenInclude( a => a.Answer )
-                               .ThenInclude( ai => ai.AnswerImage )
-                               .SingleOrDefault( q => id.Equals( q.QuestionId ) && q.IsActive );
+                                 .ThenInclude( a => a.Answer )
+                                   .ThenInclude( ai => ai.AnswerImage )
+                               .SingleOrDefaultAsync( q => id.Equals( q.QuestionId ) && q.IsActive );
         }
 
-        //Get Correct Answer For A Question By Question Id
-        public HashSet<AnswerDef> GetCorrectAnswers( int questionId ) {
-            return _quizContext.Questions                               
-                               .Include( question => question.Answers
-                                                             .Where( answers => answers.Answer.IsActive && answers.IsCorrectAnswer ) )
-                               .ThenInclude( a => a.Answer )
-                               .Single( q => questionId.Equals( q.QuestionId ) && q.IsActive ).Answers
-                               .Select( a => a.Answer )
-                               .ToHashSet();
+        //Get Correct Answer(s) For A Question By Question Id
+        public async Task<IEnumerable<AnswerDef>> GetCorrectAnswersByQuestionId( int questionId ) {
+            return await _quizContext.Answers
+                              .Include( a => a.AnswerImage )
+                              .Include( a => a.AnswerVideo )
+                              .Include( a => a.Question.Where( q => questionId.Equals( q.QuestionId ) && q.IsCorrectAnswer ) )
+                              .Where( a => a.IsActive )
+                              .ToListAsync();
         }
         #endregion
     }
@@ -237,27 +294,34 @@ namespace MIQuizAPI.Repository {
         }
 
         #region Answers Repo Members
-        // Add A New Question
-        public void AddAnswer( int questionId, AnswerDef answer, bool isCorrectAnswer = false ) {
-            //Check that the question exists by question id...  bail if it doesn't exist
-            //answer.Question = build a new JoinQuestionAnswer object using quetionId and isCorrectAnswer
-            //example here ... http://www.thereformedprogrammer.net/updating-many-to-many-relationships-in-entity-framework-core/
-            //_quizContext.Add( answer );
-            //_quizContext.SaveChanges();
+        // Add A New Answer
+        public async Task Add( AnswerDef answer ) {
+            if( answer != null ) {
+                await _quizContext.Answers.AddAsync( answer );
+                await _quizContext.SaveChangesAsync();
+            }
         }
 
-        /* TODO
-        void RemoveAnswer(int id);
-        void UpdateAnswer(AnswerDef answer);
-         * */
+        // Remove An Existing Answer
+        public async Task Remove( int id ) {
+            var answer = await _quizContext.Answers.FindAsync( id );
+            if( answer != null ) {
+                _quizContext.Answers.Remove( answer );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
+
+        // Update An Existing Answer
+        public async Task Update( AnswerDef answer ) {
+            if( answer != null ) {
+                _quizContext.Answers.Update( answer );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
 
         //List Answers To A Question By QuestionId
-        public HashSet<AnswerDef> ListAnswersForQuestion( int questionId ) {
-
-            // Try This.... might not work out...
-            //  for this to be correct I think I have To Go The Other Way,  Get Question First.
-
-            return _quizContext.Answers
+        public async Task<IEnumerable<AnswerDef>> ListByQuestionId( int questionId ) {
+            return await _quizContext.Answers
                                .Include( a => a.AnswerImage )
                                .Include( a => a.AnswerVideo )
                                .Select( a => new AnswerDef {
@@ -266,76 +330,182 @@ namespace MIQuizAPI.Repository {
                                    AnswerVideo = a.AnswerVideo
                                } )
                                .Where( a => a.Question.Select( q => q.QuestionId ).Contains( questionId ) && a.IsActive )
-                               .ToHashSet();
+                               .ToListAsync();
         }
 
         //Get All Answers To A Set Of Questions By QuestionId
-        public HashSet<AnswerDef> GetAnswersForQuestions( List<int> questionIds ) {
-            return _quizContext.Answers
+        public async Task<IEnumerable<AnswerDef>> GetByQuestionIds( List<int> questionIds ) {
+            return await _quizContext.Answers
                                .Include( a => a.AnswerImage )
                                .Include( a => a.AnswerVideo )
-                               .Where( a => a.Question.Any( q => questionIds.Contains(q.QuestionId) ) && a.IsActive )
-                               .ToHashSet();
+                               .Where( a => a.Question.Any( q => questionIds.Contains( q.QuestionId ) ) && a.IsActive )
+                               .ToListAsync();
         }
 
         //Get All Answers To A Question By QuestionId
-        public HashSet<AnswerDef> GetAnswersForQuestion( int questionId ) {
-            return _quizContext.Answers
+        public async Task<IEnumerable<AnswerDef>> GetByQuestionId( int questionId ) {
+            return await _quizContext.Answers
                                .Include( a => a.AnswerImage )
                                .Include( a => a.AnswerVideo )
                                .Where( a => a.Question.Any( q => questionId.Equals( q.QuestionId ) ) && a.IsActive )
-                               .ToHashSet();
+                               .ToListAsync();
         }
 
         //Get Single/Several Answers By Ids
-        public HashSet<AnswerDef> GetAnswers( List<int> ids ) {
-            return _quizContext.Answers
+        public async Task<IEnumerable<AnswerDef>> GetByIds( List<int> ids ) {
+            return await _quizContext.Answers
                                .Include( a => a.AnswerImage )
                                .Include( a => a.AnswerVideo )
                                .Where( a => ids.Contains( a.AnswerId ) && a.IsActive )
-                               .ToHashSet();
+                               .ToListAsync();
+        }
+
+        //Get Correct Answer By QuestionId
+        public async Task<IEnumerable<AnswerDef>> GetCorrectAnswersByQuestionId( int questionId ) {
+            return await _quizContext.Answers
+                               .Include( a => a.AnswerImage )
+                               .Include( a => a.AnswerVideo )
+                               .Include( a => a.Question.Where( q => questionId.Equals( q.QuestionId ) && q.IsCorrectAnswer ) )
+                                .ThenInclude( q => q.Question )
+                                  .ThenInclude( qu => qu.QuestionImage )
+                               .Where( a => a.IsActive )
+                               .ToListAsync();
         }
 
         //Get Answer By Id
-        public AnswerDef GetAnswer( int id ) {
-            return _quizContext.Answers
+        public async Task<AnswerDef> GetById( int id ) {
+            return await _quizContext.Answers
                                .Include( a => a.AnswerImage )
                                .Include( a => a.AnswerVideo )
-                               .Single( a => id.Equals( a.AnswerId ) && a.IsActive );
-        }
-
-        //Check Correctness of an Answer By AnswerId
-        public bool CheckAnswer( int questionId, int answerId ) {
-            return _quizContext.Answers
-                               .SingleOrDefault( a => answerId.Equals( a.AnswerId ) && a.IsActive )
-                               .Question.Single( q => questionId.Equals( q.QuestionId ) )
-                               .IsCorrectAnswer ? true : false;
+                               .SingleOrDefaultAsync( a => id.Equals( a.AnswerId ) && a.IsActive );
         }
 
         //List Correct Questions/Answers For A Quiz
-        public HashSet<QuestionDef> AnswerSheetForQuiz( int quizId ) {
-            var theseQuestion = _quizContext.Quizes
-                                            .Include( q => q.Questions )
-                                             .ThenInclude( questions => questions.Question )
-                                             .ThenInclude( question => question.Answers.Where( a => a.IsCorrectAnswer ) )
-                                             .ThenInclude( answers => answers.Answer )
-                                             .Single( (q => quizId.Equals( q.QuizId ) && q.IsActive) ).Questions;
+        public async Task<IEnumerable<QuestionDef>> GetAnswersByQuizId( int quizId ) {
+            var quiz = await _quizContext.Quizes
+                                    .Include( q => q.Questions )
+                                     .ThenInclude( questions => questions.Question )
+                                      .ThenInclude( question => question.Answers.Where( a => a.IsCorrectAnswer ) )
+                                       .ThenInclude( answers => answers.Answer )
+                                    .SingleOrDefaultAsync( (q => quizId.Equals( q.QuizId ) && q.IsActive) );
 
-            return theseQuestion.Select( q => q.Question )
-                                .ToHashSet();
+            return quiz.Questions.Select( q => q.Question ).ToList();
         }
         #endregion 
+    }
+    #endregion
 
-        /*  
-         * 
-         * 
-         * TODO: Get quiz working thru API, then work in admin stuff to create update delete quizes/question/answers...
-         *       -- build another repo and apiController for this
-         *                
-         * TODO: After quiz stuff is done could build user controls.
-         *       -- build another repo and apiController for this
-         * 
-         */
+    #region Images Repo Concrete Implementation
+    public class ImageRepository : IImageRepository {
+        private readonly MIQuizContext _quizContext;
+
+        public ImageRepository( MIQuizContext quizContext ) {
+            _quizContext = quizContext;
+        }
+
+        // Add A New Image
+        public async Task Add( Image image ) {
+            if( image != null ) {
+                await _quizContext.Images.AddAsync( image );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
+
+        // Remove A Image
+        public async Task Remove( int id ) {
+            var image = await _quizContext.Images.FindAsync( id );
+            if( image != null ) {
+                _quizContext.Images.Remove( image );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
+
+        // Update A Image
+        public async Task Update( Image image ) {
+            if( image != null ) {
+                _quizContext.Images.Update( image );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
+
+        //List All Images
+        //TODO
+
+        //Get All Images
+        //TODO
+
+        //Get Images By Ids
+        public async Task<IEnumerable<Image>> GetByIds( List<int> ids ) {
+            return await _quizContext.Images
+                            .Where( i => ids.Contains( i.ImageId ) && i.IsActive )
+                            .ToListAsync();
+        }
+
+        //Get Image By Id
+        public async Task<Image> GetById( int id ) {
+            return await _quizContext.Images
+                            .SingleOrDefaultAsync( i => id.Equals( i.ImageId ) && i.IsActive );
+        }
+
+        //Get Image By Question Id
+        //TODO
+    }
+    #endregion
+
+    #region Videos Repo Concrete Implementation
+    public class VideoRepository : IVideoRepository {
+        private readonly MIQuizContext _quizContext;
+
+        public VideoRepository( MIQuizContext quizContext ) {
+            _quizContext = quizContext;
+        }
+
+        // Add A New Video
+        public async Task Add( Video video ) {
+            if( video != null ) {
+                await _quizContext.Videos.AddAsync( video );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
+
+        // Remove A Video
+        public async Task Remove( int id ) {
+            var video = await _quizContext.Videos.FindAsync( id );
+            if( video != null ) {
+                _quizContext.Videos.Remove( video );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
+
+        // Update A Video
+        public async Task Update( Video video ) {
+            if( video != null ) {
+                _quizContext.Videos.Update( video );
+                await _quizContext.SaveChangesAsync();
+            }
+        }
+
+        //List All Images
+        //TODO
+
+        //Get All Images
+        //TODO
+
+        //Get Videos By Ids
+        public async Task<IEnumerable<Video>> GetByIds( List<int> ids ) {
+            return await _quizContext.Videos
+                            .Where( i => ids.Contains( i.VideoId ) && i.IsActive )
+                            .ToListAsync();
+        }
+
+        //Get Video By Id
+        public async Task<Video> GetById( int id ) {
+            return await _quizContext.Videos
+                            .SingleOrDefaultAsync( i => id.Equals( i.VideoId ) && i.IsActive );
+        }
+
+        //Get Image By Question 
+        //TODOId
     }
     #endregion
 }

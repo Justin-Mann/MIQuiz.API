@@ -11,8 +11,8 @@ using System;
 namespace MIQuizAPI.Migrations
 {
     [DbContext(typeof(MIQuizContext))]
-    [Migration("20180120000051_Initial")]
-    partial class Initial
+    [Migration("20180122041147_InitialCodeFirst")]
+    partial class InitialCodeFirst
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
