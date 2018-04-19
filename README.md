@@ -1,5 +1,5 @@
 # MIQuiz.API
-<code>                                                                                                     
+<span style="display:block;line-height:8px; font-size: 8px; font-weight:bold;white-space:pre;font-family: monospace;color: #fff; background: #000;">                                                                                                   
                                                                                                                        
                                                                                                                        
                                               .,*,,,,..,..*,                                                           
@@ -39,5 +39,5 @@
           ..       ..         ///(#####((#(###%%###########%%%##((((####(((((((//**,,... .    .     . ...........      
                ..,.           ,//((####((((((##########################(((////////*,,,...  .           ...........     
              ...               /((((((((((((//(((((#######(((#######((((/((///(((((/,,,.. .                ........    
-</code>
+</span>
 mcluvin was here.
